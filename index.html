@@ -1,17 +1,1137 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+
+    <title>Quantum Many-Body Dynamics | Qiskit</title>
+
+    <meta name="description"
+          content="Quantum Many-Body Dynamics on IBM Quantum Hardware using Qiskit — simulation, time evolution, tomography, fidelity analysis and noise characterization.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
-        h1 { color: #333; }
-        p { color: #666; font-size: 18px; }
+        :root {
+            --bg: #05070d;
+            --bg-soft: #0a0e18;
+            --card: rgba(14, 20, 34, 0.72);
+            --border: rgba(255,255,255,0.09);
+            --text: #f4f7ff;
+            --muted: #9ba7bd;
+            --cyan: #55e6ff;
+            --purple: #9b7cff;
+            --pink: #ff65c3;
+            --green: #66f2b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(85,230,255,0.10), transparent 30%),
+                radial-gradient(circle at 85% 20%, rgba(155,124,255,0.12), transparent 30%),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .25;
+            background-image:
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1120px, 92%);
+            margin: auto;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            backdrop-filter: blur(18px);
+            background: rgba(5,7,13,.72);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .nav-inner {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            letter-spacing: -.5px;
+        }
+
+        .logo span {
+            color: var(--cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            list-style: none;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            transition: .25s;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+        }
+
+        .github-btn {
+            padding: 10px 17px;
+            border: 1px solid rgba(85,230,255,.35);
+            border-radius: 999px;
+            color: var(--cyan);
+        }
+
+        .github-btn:hover {
+            background: rgba(85,230,255,.08);
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 130px 0 80px;
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(85,230,255,.18);
+            background: rgba(85,230,255,.05);
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+        }
+
+        h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(45px, 6vw, 76px);
+            line-height: 1.02;
+            letter-spacing: -3px;
+            margin-bottom: 25px;
+        }
+
+        .gradient {
+            background: linear-gradient(
+                90deg,
+                var(--cyan),
+                #b69cff,
+                var(--pink)
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 650px;
+            margin-bottom: 34px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 13px 20px;
+            border-radius: 9px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: .25s;
+            border: 1px solid var(--border);
+        }
+
+        .btn-primary {
+            color: #031016;
+            background: var(--cyan);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(85,230,255,.18);
+        }
+
+        .btn-secondary {
+            color: var(--text);
+            background: rgba(255,255,255,.035);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,.2);
+        }
+
+        /* QUANTUM VISUAL */
+
+        .quantum-box {
+            min-height: 420px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at center, rgba(85,230,255,.08), transparent 55%),
+                var(--card);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,.25);
+        }
+
+        .orbit {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgba(85,230,255,.18);
+            border-radius: 50%;
+            animation: rotate 12s linear infinite;
+        }
+
+        .orbit.two {
+            width: 190px;
+            height: 190px;
+            border-color: rgba(155,124,255,.2);
+            animation-duration: 8s;
+            animation-direction: reverse;
+        }
+
+        .orbit.three {
+            width: 330px;
+            height: 330px;
+            border-color: rgba(255,101,195,.1);
+            animation-duration: 18s;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .qubit {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-family: "Space Grotesk";
+            font-size: 31px;
+            font-weight: 700;
+            background: rgba(8,13,25,.95);
+            border: 1px solid rgba(85,230,255,.45);
+            box-shadow:
+                0 0 30px rgba(85,230,255,.16),
+                inset 0 0 30px rgba(85,230,255,.06);
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 12px var(--cyan);
+        }
+
+        .p1 { top: 22%; left: 24%; }
+        .p2 { top: 30%; right: 22%; background: var(--purple); }
+        .p3 { bottom: 22%; left: 29%; background: var(--pink); }
+        .p4 { bottom: 27%; right: 25%; background: var(--green); }
+
+        /* SECTIONS */
+
+        section {
+            padding: 110px 0;
+        }
+
+        .section-header {
+            max-width: 700px;
+            margin-bottom: 50px;
+        }
+
+        .section-label {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-family: "Space Grotesk";
+            font-size: clamp(34px, 5vw, 52px);
+            line-height: 1.08;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .stat {
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .stat-number {
+            font-family: "Space Grotesk";
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* MODELS */
+
+        .models {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .model {
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,.045),
+                rgba(255,255,255,.015)
+            );
+            transition: .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model::after {
+            content: "";
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(85,230,255,.06);
+            filter: blur(45px);
+            right: -80px;
+            bottom: -80px;
+        }
+
+        .model:hover {
+            transform: translateY(-5px);
+            border-color: rgba(85,230,255,.25);
+        }
+
+        .model-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: rgba(85,230,255,.08);
+            color: var(--cyan);
+            font-size: 21px;
+            margin-bottom: 20px;
+        }
+
+        .model h3 {
+            font-family: "Space Grotesk";
+            font-size: 21px;
+            margin-bottom: 9px;
+        }
+
+        .model p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* WORKFLOW */
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .step {
+            padding: 24px 18px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(255,255,255,.025);
+            text-align: center;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            border: 1px solid rgba(85,230,255,.3);
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .step h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* TECH */
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tech {
+            padding: 12px 17px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.025);
+            color: #d9e2f5;
+            font-size: 14px;
+        }
+
+        /* CODE BLOCK */
+
+        .code-window {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            background: #070a12;
+        }
+
+        .window-top {
+            padding: 13px 17px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #303848;
+        }
+
+        pre {
+            padding: 25px;
+            overflow-x: auto;
+            color: #b9c7de;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .keyword { color: #c4a6ff; }
+        .function { color: #69e4ff; }
+        .string { color: #9ce6b6; }
+
+        /* CTA */
+
+        .cta {
+            text-align: center;
+            padding: 80px 30px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            background:
+                radial-gradient(circle at center, rgba(85,230,255,.09), transparent 55%),
+                rgba(255,255,255,.02);
+        }
+
+        .cta p {
+            max-width: 620px;
+            margin: 0 auto 30px;
+            color: var(--muted);
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 35px 0;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 45px;
+            }
+
+            .quantum-box {
+                min-height: 340px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .workflow {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            section {
+                padding: 80px 0;
+            }
+
+            h1 {
+                letter-spacing: -2px;
+            }
+
+            .models {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+
+            .quantum-box {
+                min-height: 300px;
+            }
+
+            .orbit.three {
+                width: 270px;
+                height: 270px;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <h1>Welcome to My Website!</h1>
-    <p>This page is currently under construction. Check back soon for updates!</p>
+
+<!-- NAVIGATION -->
+
+<nav>
+    <div class="container nav-inner">
+        <a href="#" class="logo">
+            Quantum<span>Dynamics</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#about">Research</a></li>
+            <li><a href="#models">Models</a></li>
+            <li><a href="#method">Method</a></li>
+            <li><a href="#technology">Technology</a></li>
+            <li>
+                <a
+                    class="github-btn"
+                    href="https://github.com/sanjay-karthik/Quantum-Many-Body-Dynamics-on-Qiskit"
+                    target="_blank">
+                    GitHub ↗
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<!-- HERO -->
+
+<header class="hero">
+    <div class="container hero-grid">
+
+        <div>
+            <div class="eyebrow">
+                <span class="pulse"></span>
+                Quantum Research Project
+            </div>
+
+            <h1>
+                Quantum Many-Body
+                <span class="gradient">Dynamics</span>
+            </h1>
+
+            <p>
+                Exploring interacting quantum systems on IBM Quantum
+                superconducting processors using Qiskit, digital time
+                evolution, state tomography and fidelity analysis.
+            </p>
+
+            <div class="buttons">
+                <a
+                    class="btn btn-primary"
+                    href="https://github.com/sanjay-karthik/Quantum-Many-Body-Dynamics-on-Qiskit"
+                    target="_blank">
+                    Explore Repository →
+                </a>
+
+                <a class="btn btn-secondary" href="#models">
+                    View Models
+                </a>
+            </div>
+        </div>
+
+
+        <!-- QUANTUM VISUAL -->
+
+        <div class="quantum-box">
+
+            <div class="orbit"></div>
+            <div class="orbit two"></div>
+            <div class="orbit three"></div>
+
+            <div class="particle p1"></div>
+            <div class="particle p2"></div>
+            <div class="particle p3"></div>
+            <div class="particle p4"></div>
+
+            <div class="qubit">
+                |ψ⟩
+            </div>
+
+        </div>
+
+    </div>
+</header>
+
+
+<!-- ABOUT -->
+
+<section id="about">
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">01 — Research</div>
+
+            <h2>
+                Simulating quantum matter
+                on real quantum hardware.
+            </h2>
+
+            <p>
+                This project investigates the dynamics of interacting
+                many-body quantum systems using circuit-based simulations
+                and execution on IBM Quantum processors.
+            </p>
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-number">04</div>
+                <div class="stat-label">Hamiltonian Models</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">Qiskit</div>
+                <div class="stat-label">Quantum SDK</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">IBM</div>
+                <div class="stat-label">Quantum Hardware</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-number">NISQ</div>
+                <div class="stat-label">Computing Regime</div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- MODELS -->
+
+<section id="models">
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">02 — Hamiltonians</div>
+
+            <h2>
+                Four models.
+                One quantum framework.
+            </h2>
+
+            <p>
+                The repository implements multiple interacting many-body
+                Hamiltonians to investigate different forms of quantum
+                dynamics.
+            </p>
+        </div>
+
+        <div class="models">
+
+            <article class="model">
+                <div class="model-icon">Ψ</div>
+
+                <h3>Fermi–Hubbard Model</h3>
+
+                <p>
+                    A fundamental model for studying interacting fermions,
+                    hopping dynamics and strong correlations in quantum
+                    many-body systems.
+                </p>
+            </article>
+
+
+            <article class="model">
+                <div class="model-icon">∿</div>
+
+                <h3>Floquet Model</h3>
+
+                <p>
+                    Periodically driven quantum dynamics used to explore
+                    non-equilibrium behavior and time-dependent evolution.
+                </p>
+            </article>
+
+
+            <article class="model">
+                <div class="model-icon">↻</div>
+
+                <h3>Dzyaloshinskii–Moriya Interaction</h3>
+
+                <p>
+                    An interaction producing non-trivial spin dynamics
+                    through antisymmetric exchange coupling.
+                </p>
+            </article>
+
+
+            <article class="model">
+                <div class="model-icon">Σ</div>
+
+                <h3>Lipkin–Meshkov–Glick</h3>
+
+                <p>
+                    A collective spin model useful for investigating
+                    long-range interactions and many-body quantum dynamics.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- METHOD -->
+
+<section id="method">
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">03 — Methodology</div>
+
+            <h2>
+                From Hamiltonian
+                to quantum measurement.
+            </h2>
+
+            <p>
+                The simulation pipeline converts physical Hamiltonians
+                into executable quantum circuits and analyzes the resulting
+                quantum states.
+            </p>
+        </div>
+
+
+        <div class="workflow">
+
+            <div class="step">
+                <div class="step-number">01</div>
+                <h3>Hamiltonian</h3>
+                <p>Define the interacting quantum model.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">02</div>
+                <h3>Trotterization</h3>
+                <p>Approximate time evolution digitally.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">03</div>
+                <h3>Quantum Circuit</h3>
+                <p>Map dynamics onto quantum gates.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">04</div>
+                <h3>Hardware</h3>
+                <p>Execute circuits on IBM Quantum.</p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">05</div>
+                <h3>Analysis</h3>
+                <p>Measure states, fidelity and noise.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- TECH -->
+
+<section id="technology">
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">04 — Technology</div>
+
+            <h2>
+                Built with the
+                quantum computing stack.
+            </h2>
+
+            <p>
+                Classical scientific computing tools are combined with
+                Qiskit and IBM Quantum hardware for hybrid simulation
+                and analysis.
+            </p>
+        </div>
+
+        <div class="tech-list">
+
+            <div class="tech">Python</div>
+            <div class="tech">Qiskit</div>
+            <div class="tech">IBM Quantum</div>
+            <div class="tech">NumPy</div>
+            <div class="tech">SciPy</div>
+            <div class="tech">Matplotlib</div>
+            <div class="tech">Quantum Circuits</div>
+            <div class="tech">State Tomography</div>
+            <div class="tech">Fidelity Analysis</div>
+            <div class="tech">Noise Characterization</div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- CODE -->
+
+<section>
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">05 — Quantum Circuit</div>
+
+            <h2>
+                Digital quantum time evolution.
+            </h2>
+
+            <p>
+                A simplified representation of the Qiskit workflow used
+                to construct and evolve quantum circuits.
+            </p>
+        </div>
+
+
+        <div class="code-window">
+
+            <div class="window-top">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+<pre><span class="keyword">from</span> qiskit <span class="keyword">import</span> QuantumCircuit
+
+<span class="keyword">def</span> <span class="function">time_evolution</span>(n_qubits, steps):
+
+    qc = QuantumCircuit(n_qubits)
+
+    <span class="keyword">for</span> step <span class="keyword">in</span> range(steps):
+
+        <span class="comment"># Hamiltonian evolution</span>
+        <span class="keyword">for</span> q <span class="keyword">in</span> range(n_qubits):
+            qc.h(q)
+
+        <span class="comment"># Trotterized interaction</span>
+        <span class="keyword">for</span> q <span class="keyword">in</span> range(n_qubits - 1):
+            qc.cx(q, q + 1)
+
+    <span class="keyword">return</span> qc
+</pre>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ANALYSIS -->
+
+<section>
+    <div class="container">
+
+        <div class="section-header">
+            <div class="section-label">06 — Analysis</div>
+
+            <h2>
+                Measuring the quantum state.
+            </h2>
+
+            <p>
+                Beyond circuit execution, the project includes analysis
+                techniques for reconstructing and evaluating the resulting
+                quantum states.
+            </p>
+        </div>
+
+
+        <div class="models">
+
+            <article class="model">
+                <div class="model-icon">ρ</div>
+                <h3>Density Matrix Reconstruction</h3>
+                <p>
+                    Reconstruct quantum states from measurement information
+                    to study the evolution of the system.
+                </p>
+            </article>
+
+            <article class="model">
+                <div class="model-icon">F</div>
+                <h3>Fidelity Analysis</h3>
+                <p>
+                    Compare quantum states and quantify how closely hardware
+                    evolution follows the expected dynamics.
+                </p>
+            </article>
+
+            <article class="model">
+                <div class="model-icon">⌁</div>
+                <h3>State Tomography</h3>
+                <p>
+                    Characterize quantum states through measurements across
+                    different bases.
+                </p>
+            </article>
+
+            <article class="model">
+                <div class="model-icon">N</div>
+                <h3>Noise Characterization</h3>
+                <p>
+                    Investigate the impact of real-device noise and hardware
+                    limitations on many-body quantum dynamics.
+                </p>
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- CTA -->
+
+<section>
+    <div class="container">
+
+        <div class="cta">
+
+            <div class="section-label">
+                Open Source Research
+            </div>
+
+            <h2>
+                Explore the complete project.
+            </h2>
+
+            <p>
+                View the implementation, notebooks, Hamiltonian models
+                and analysis tools in the GitHub repository.
+            </p>
+
+            <div class="buttons" style="justify-content:center;">
+
+                <a
+                    class="btn btn-primary"
+                    href="https://github.com/sanjay-karthik/Quantum-Many-Body-Dynamics-on-Qiskit"
+                    target="_blank">
+                    View on GitHub ↗
+                </a>
+
+                <a
+                    class="btn btn-secondary"
+                    href="https://sanjay-karthik.github.io/Quantum-Many-Body-Dynamics-on-Qiskit/"
+                    target="_blank">
+                    Live Website ↗
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+    <div class="container footer-inner">
+
+        <div>
+            Quantum Many-Body Dynamics on Qiskit
+        </div>
+
+        <div>
+            Research project by Sanjay Karthik J L
+        </div>
+
+    </div>
+</footer>
+
+
+<script>
+    // Small reveal animation
+    const observer = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        },
+        { threshold: 0.1 }
+    );
+
+    document.querySelectorAll(
+        ".model, .stat, .step, .code-window, .cta"
+    ).forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(20px)";
+        el.style.transition = "opacity .7s ease, transform .7s ease";
+        observer.observe(el);
+    });
+</script>
+
 </body>
 </html>
+```
